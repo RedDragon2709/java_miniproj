@@ -8,92 +8,121 @@ public class BST {
         return root;
     }
 
-    // Insert
-    public void insert(int data) {
+    // ---------- INSERT ----------
+    public boolean insert(int data) {
+        if (search(data)) return false;   // prevent duplicates
         root = insertRec(root, data);
+        return true;
     }
 
-    private BSTNode insertRec(BSTNode root, int data) {
-        if (root == null)
+    private BSTNode insertRec(BSTNode node, int data) {
+        if (node == null)
             return new BSTNode(data);
 
-        if (data < root.data)
-            root.left = insertRec(root.left, data);
-        else if (data > root.data)
-            root.right = insertRec(root.right, data);
+        if (data < node.getData())
+            node.setLeft(insertRec(node.getLeft(), data));
+        else
+            node.setRight(insertRec(node.getRight(), data));
 
-        return root;
+        return node;
     }
 
-    // Delete
+    // ---------- SEARCH ----------
+    public boolean search(int data) {
+        return searchRec(root, data);
+    }
+
+    private boolean searchRec(BSTNode node, int data) {
+        if (node == null) return false;
+        if (data == node.getData()) return true;
+
+        return data < node.getData()
+                ? searchRec(node.getLeft(), data)
+                : searchRec(node.getRight(), data);
+    }
+
+    // ---------- DELETE ----------
     public void delete(int data) {
         root = deleteRec(root, data);
     }
 
-    private BSTNode deleteRec(BSTNode root, int data) {
-        if (root == null)
-            return null;
+    private BSTNode deleteRec(BSTNode node, int data) {
+        if (node == null) return null;
 
-        if (data < root.data)
-            root.left = deleteRec(root.left, data);
-        else if (data > root.data)
-            root.right = deleteRec(root.right, data);
-        else {
-            if (root.left == null)
-                return root.right;
-            if (root.right == null)
-                return root.left;
+        if (data < node.getData()) {
+            node.setLeft(deleteRec(node.getLeft(), data));
+        } else if (data > node.getData()) {
+            node.setRight(deleteRec(node.getRight(), data));
+        } else {
+            // Case 1 & 2
+            if (node.getLeft() == null) return node.getRight();
+            if (node.getRight() == null) return node.getLeft();
 
-            root.data = minValue(root.right);
-            root.right = deleteRec(root.right, root.data);
+            // Case 3
+            node.setData(minValue(node.getRight()));
+            node.setRight(deleteRec(node.getRight(), node.getData()));
         }
-        return root;
+        return node;
     }
 
-    private int minValue(BSTNode root) {
-        int min = root.data;
-        while (root.left != null) {
-            min = root.left.data;
-            root = root.left;
-        }
-        return min;
+    private int minValue(BSTNode node) {
+        while (node.getLeft() != null)
+            node = node.getLeft();
+        return node.getData();
     }
 
-    // Traversals
+    // ---------- TRAVERSALS ----------
     public String inorder() {
-        return inorderRec(root);
+        StringBuilder sb = new StringBuilder();
+        inorderRec(root, sb);
+        return sb.toString();
     }
 
-    private String inorderRec(BSTNode root) {
-        if (root == null) return "";
-        return inorderRec(root.left) + root.data + " " + inorderRec(root.right);
+    private void inorderRec(BSTNode node, StringBuilder sb) {
+        if (node == null) return;
+        inorderRec(node.getLeft(), sb);
+        sb.append(node.getData()).append(" ");
+        inorderRec(node.getRight(), sb);
     }
 
     public String preorder() {
-        return preorderRec(root);
+        StringBuilder sb = new StringBuilder();
+        preorderRec(root, sb);
+        return sb.toString();
     }
 
-    private String preorderRec(BSTNode root) {
-        if (root == null) return "";
-        return root.data + " " + preorderRec(root.left) + preorderRec(root.right);
+    private void preorderRec(BSTNode node, StringBuilder sb) {
+        if (node == null) return;
+        sb.append(node.getData()).append(" ");
+        preorderRec(node.getLeft(), sb);
+        preorderRec(node.getRight(), sb);
     }
 
     public String postorder() {
-        return postorderRec(root);
+        StringBuilder sb = new StringBuilder();
+        postorderRec(root, sb);
+        return sb.toString();
     }
 
-    private String postorderRec(BSTNode root) {
-        if (root == null) return "";
-        return postorderRec(root.left) + postorderRec(root.right) + root.data + " ";
+    private void postorderRec(BSTNode node, StringBuilder sb) {
+        if (node == null) return;
+        postorderRec(node.getLeft(), sb);
+        postorderRec(node.getRight(), sb);
+        sb.append(node.getData()).append(" ");
     }
 
-    // Height
+    // ---------- HEIGHT ----------
     public int height() {
         return heightRec(root);
     }
 
-    private int heightRec(BSTNode root) {
-        if (root == null) return 0;
-        return 1 + Math.max(heightRec(root.left), heightRec(root.right));
+    private int heightRec(BSTNode node) {
+        if (node == null) return 0;
+        return 1 + Math.max(heightRec(node.getLeft()), heightRec(node.getRight()));
+    }
+
+    // ---------- CLEAR ----------
+    public void clear() {
+        root = null;
     }
 }
