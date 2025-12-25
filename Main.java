@@ -1,0 +1,8 @@
+import bst.*;
+
+public class Main {
+    public static void main(String[] args) {
+        BST bst = new BST();
+        new BSTView(bst);
+    }
+}
