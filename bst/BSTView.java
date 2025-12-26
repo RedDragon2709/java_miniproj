@@ -190,11 +190,20 @@ public class BSTView extends JFrame {
     private Integer getInput() {
         try {
             return Integer.parseInt(tf.getText().trim());
-        } catch (Exception e) {
+        } catch (NumberFormatException e) {
             setStatus("Enter a valid integer");
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Invalid input! Please enter a valid integer value.",
+                    "Input Error",
+                    JOptionPane.ERROR_MESSAGE
+            );
+
             return null;
         }
     }
+
 
     private void refreshUI() {
         taTraversals.setText(
